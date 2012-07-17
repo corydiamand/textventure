@@ -37,7 +37,7 @@ function inputParse(input){
 	}
 }
 
-//this will generate output for the output area and delete the last element if there is overflow
+//a function to generate output for the output area and delete the last element if there is overflow
 function generateOutput(output)
 {
 	$("#outputarea").append("<span>"+output+"</span>"+"<BR>");
