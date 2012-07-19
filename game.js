@@ -78,7 +78,9 @@
 					move("west");
 					return;
 				}
-		
+				else{
+				generateOutput("Please specify a valid cardinal direction.");
+				}
 				console.log("move detected");
 			
 			}
@@ -93,7 +95,7 @@
 	{
 		$("#outputarea").append("<span>"+output+"</span>"+"<BR>");
 		//deletes first element of output to prevent overflow - change number in if statement. It counts number of spans, so divide by 2 for line numbers.
-		if ( $("#outputarea").children().length > 28){
+		if ($("#outputarea").children().length > 28){
 			$("#outputarea").children("span:first").remove();
 			$("#outputarea").children("br:first").remove();
 		}
@@ -131,22 +133,33 @@
 		opposite.east = "west";
 		opposite.west = "east";
 		
-		console.log(player.location.connections["north"]);
-		console.log(player.location.connections["south"]);
-		console.log(player.location.connections["east"]);
-		console.log(player.location.connections["west"]);
+	//	console.log(player.location.connections["north"]);
+	//	console.log(player.location.connections["south"]);
+	//	console.log(player.location.connections["east"]);
+	//	console.log(player.location.connections["west"]);
 		
 	
-		if (player.location.connections["direction"] != undefined){
+		if (player.location.connections[direction] != undefined){
 		
 			player.location = player.location.connections[direction];
-			generateOutput("player moving " + direction + "to previously visited room")
+			generateOutput("player moving " + direction + " to previously visited room");
+			console.log("player location, already visited = " + player.location);
+			return;
 		}
 		
 		if (player.location.connections[direction] == undefined){
+		
 			makeRoom(direction);
-			generateOutput("New room discovered to the " +direction+"!");
+			generateOutput("New room discovered to the " + direction +"!");
 			console.log("room generated to the " + direction);
+			player.location.connections[direction] = newRoom;
+			previousRoom = player.location;
+			console.log(previousRoom);
+			player.location = newRoom; //newRoom object is returned by makeRoom()
+			player.location.connections[opposite[direction]] = previousRoom;	
+			console.log(player.location.connections[opposite[direction]]);
+			console.log(player.location.id + " = player location. Room was generated to the: " + direction + " of room" + previousRoom.id);
+			return;
 		}
 	}
 
@@ -154,11 +167,17 @@
 	function makeRoom(direction){
 	
 		rooms["room" + roomCount] = new room();
+		//when the game is initializing, set the player's location to the new room.
+		if (player.location == null)	{
+			player.location = rooms["room"+ roomCount];
+			console.log("initial player location registered");
+		};
 		rooms["room" + roomCount].id = roomCount;
-		console.log("room"+roomCount+ " generated");
-		player.location = rooms["room"+ roomCount];
-		console.log(player.location.id + " = make rooms player location");
+		newRoom = rooms["room" + roomCount];
+		console.log("room"+roomCount+ " generated in makeroom function");
+		
 		roomCount++;
+		return newRoom; 
 		
 	}
 	
