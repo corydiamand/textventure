@@ -1,8 +1,8 @@
 (function()
 {
 	started = false;
-	roomCount = 0;
-	rooms = {};
+	environmentCount = 0;
+	generatedEnvironments = {};
 
 	$(document).ready(function(){
 
@@ -44,7 +44,7 @@
 			generateOutput("Starting game! Enter your players name.");
 			player = new player(prompt("Enter Your player's name"));
 			generateOutput(player.getStatus());
-			makeRoom();
+			makeEnvironment();
 		};
 	
 		started = true;
@@ -117,10 +117,10 @@
 
 
 	//this will describe rooms / environments
-	function room(){
+	function environment(){
 		this.id;
 		this.size;
-		this.environment;
+		this.biome;
 		this.connections = {};
 	
 	}
@@ -133,51 +133,47 @@
 		opposite.east = "west";
 		opposite.west = "east";
 		
-	//	console.log(player.location.connections["north"]);
-	//	console.log(player.location.connections["south"]);
-	//	console.log(player.location.connections["east"]);
-	//	console.log(player.location.connections["west"]);
-		
 	
 		if (player.location.connections[direction] != undefined){
 		
 			player.location = player.location.connections[direction];
 			generateOutput("player moving " + direction + " to previously visited room");
-			console.log("player location, already visited = " + player.location);
+			console.log("player location, already visited = " + player.location.id);
 			return;
 		}
 		
 		if (player.location.connections[direction] == undefined){
 		
-			makeRoom(direction);
-			generateOutput("New room discovered to the " + direction +"!");
-			console.log("room generated to the " + direction);
-			player.location.connections[direction] = newRoom;
-			previousRoom = player.location;
-			console.log(previousRoom);
-			player.location = newRoom; //newRoom object is returned by makeRoom()
-			player.location.connections[opposite[direction]] = previousRoom;	
+			makeEnvironment(direction);
+			generateOutput("New environment discovered to the " + direction +"!"+" It's a " +newEnvironment.biome.name +".");
+			console.log("environment generated to the " + direction);
+			player.location.connections[direction] = newEnvironment;
+			previousEnvironment = player.location;
+			console.log(previousEnvironment);
+			player.location = newEnvironment; //newRoom object is returned by makeRoom()
+			player.location.connections[opposite[direction]] = previousEnvironment;	
 			console.log(player.location.connections[opposite[direction]]);
-			console.log(player.location.id + " = player location. Room was generated to the: " + direction + " of room" + previousRoom.id);
+			console.log(player.location.id + " = player location. Environment was generated to the: " + direction + " of Environment" + previousEnvironment.id);
 			return;
 		}
 	}
 
 
-	function makeRoom(direction){
+	function makeEnvironment(direction){
 	
-		rooms["room" + roomCount] = new room();
+		generatedEnvironments["environment" + environmentCount] = new environment();
 		//when the game is initializing, set the player's location to the new room.
-		if (player.location == null)	{
-			player.location = rooms["room"+ roomCount];
+		if (player.location == null){
+			player.location = generatedEnvironments["environment"+ environmentCount];
 			console.log("initial player location registered");
 		};
-		rooms["room" + roomCount].id = roomCount;
-		newRoom = rooms["room" + roomCount];
-		console.log("room"+roomCount+ " generated in makeroom function");
+		generatedEnvironments["environment" + environmentCount].id = environmentCount;
+		generatedEnvironments["environment" + environmentCount].biome = randomEnvironment();
+		newEnvironment = generatedEnvironments["environment" + environmentCount];
+		console.log("environment"+environmentCount+ " generated in makeEnvironment function");
 		
-		roomCount++;
-		return newRoom; 
+		environmentCount++;
+		return newEnvironment; 
 		
 	}
 	
