@@ -45,9 +45,10 @@
 			player = new player(prompt("Enter Your player's name"));
 			generateOutput(player.getStatus());
 			makeEnvironment();
+			return started = true;
 		};
 	
-		started = true;
+		
 		if (started == true){
 	
 			//if game already started
@@ -79,14 +80,23 @@
 					return;
 				}
 				else{
-				generateOutput("Please specify a valid cardinal direction.");
+					generateOutput("Please specify a valid cardinal direction.");
 				}
 				console.log("move detected");
 			
 			}
+			
+			if (input.match(/status/i) != null){
+				generateOutput(player.getStatus());
+			}
+			
+			if (input.match(/view/i) != null){
+				generateOutput("You are currently in a "+player.location.biome.name+" area. "+"The wildlife in this area includes a "+player.location.biome.wildlife[3]+".");
+			}
 	
 		} //started
-	
+		
+		else generateOutput("please enter valid command   :\)")
 	}
 
 
@@ -95,7 +105,7 @@
 	{
 		$("#outputarea").append("<span>"+output+"</span>"+"<BR>");
 		//deletes first element of output to prevent overflow - change number in if statement. It counts number of spans, so divide by 2 for line numbers.
-		if ($("#outputarea").children().length > 28){
+		if ($("#outputarea").children().length > 8){
 			$("#outputarea").children("span:first").remove();
 			$("#outputarea").children("br:first").remove();
 		}
@@ -150,7 +160,7 @@
 			player.location.connections[direction] = newEnvironment;
 			previousEnvironment = player.location;
 			console.log(previousEnvironment);
-			player.location = newEnvironment; //newRoom object is returned by makeRoom()
+			player.location = newEnvironment; //newEnvironment object is returned by makeRoom()
 			player.location.connections[opposite[direction]] = previousEnvironment;	
 			console.log(player.location.connections[opposite[direction]]);
 			console.log(player.location.id + " = player location. Environment was generated to the: " + direction + " of Environment" + previousEnvironment.id);
@@ -162,11 +172,14 @@
 	function makeEnvironment(direction){
 	
 		generatedEnvironments["environment" + environmentCount] = new environment();
+		
 		//when the game is initializing, set the player's location to the new room.
 		if (player.location == null){
+		
 			player.location = generatedEnvironments["environment"+ environmentCount];
 			console.log("initial player location registered");
 		};
+		
 		generatedEnvironments["environment" + environmentCount].id = environmentCount;
 		generatedEnvironments["environment" + environmentCount].biome = randomEnvironment();
 		newEnvironment = generatedEnvironments["environment" + environmentCount];
