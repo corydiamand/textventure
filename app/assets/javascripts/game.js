@@ -1,5 +1,3 @@
-(function()
-{
 	started = false;
 	environmentCount = 0;
 	generatedEnvironments = {};
@@ -16,7 +14,8 @@
 	
 		//an important variable!!
 		input = $("#inputarea").val();
-	
+		
+
 		game(input);
 	
 		$(this).val('');
@@ -32,6 +31,7 @@
 		console.log("from game function: "+input);
 		inputParse(input);
 	}
+
 
 
 	//this will interpret commands from the input line
@@ -53,37 +53,13 @@
 	
 			//if game already started
 			if (input.match(/start/i) != null ){
-			generateOutput("Game has begun.");
+			generateOutput("The game has already begun.");
 			};
 	
 	
 	
 			if (input.match(/move/i) != null){
-			
-				if (input.match(/north/i)){
-					move("north");
-					return;
-				}
-		
-				if (input.match(/south/i)){
-					move("south");
-					return;
-				}
-			
-				if (input.match(/east/i)){
-					move("east");
-					return;
-				}
-			
-				if (input.match(/west/i)){
-					move("west");
-					return;
-				}
-				else{
-					generateOutput("Please specify a valid cardinal direction.");
-				}
-				console.log("move detected");
-			
+				move(input)
 			}
 			
 			if (input.match(/status/i) != null){
@@ -109,87 +85,15 @@
 			$("#outputarea").children("span:first").remove();
 			$("#outputarea").children("br:first").remove();
 		}
-}
-
-
-	//describes player
-	function player(name){
-
-		this.health = 100;
-		this.name = name;
-		this.location = null;
-		
-		this.getStatus = function(){
-			return name +" currently has " + this.health + " health."	
-		}
 	}
 
 
 
-	//this will describe rooms / environments
-	function environment(){
-		this.id;
-		this.size;
-		this.biome;
-		this.connections = {};
-	
-	}
-
-	function move(direction){
-		
-		opposite = {};
-		opposite.north = "south";
-		opposite.south = "north";
-		opposite.east = "west";
-		opposite.west = "east";
-		
-	
-		if (player.location.connections[direction] != undefined){
-		
-			player.location = player.location.connections[direction];
-			generateOutput("player moving " + direction + " to previously visited room");
-			console.log("player location, already visited = " + player.location.id);
-			return;
-		}
-		
-		if (player.location.connections[direction] == undefined){
-		
-			makeEnvironment(direction);
-			generateOutput("New environment discovered to the " + direction +"!"+" It's a " +newEnvironment.biome.name +".");
-			console.log("environment generated to the " + direction);
-			player.location.connections[direction] = newEnvironment;
-			previousEnvironment = player.location;
-			console.log(previousEnvironment);
-			player.location = newEnvironment; //newEnvironment object is returned by makeRoom()
-			player.location.connections[opposite[direction]] = previousEnvironment;	
-			console.log(player.location.connections[opposite[direction]]);
-			console.log(player.location.id + " = player location. Environment was generated to the: " + direction + " of Environment" + previousEnvironment.id);
-			return;
-		}
-	}
 
 
-	function makeEnvironment(direction){
+
+
 	
-		generatedEnvironments["environment" + environmentCount] = new environment();
-		
-		//when the game is initializing, set the player's location to the new room.
-		if (player.location == null){
-		
-			player.location = generatedEnvironments["environment"+ environmentCount];
-			console.log("initial player location registered");
-		};
-		
-		generatedEnvironments["environment" + environmentCount].id = environmentCount;
-		generatedEnvironments["environment" + environmentCount].biome = randomEnvironment();
-		newEnvironment = generatedEnvironments["environment" + environmentCount];
-		console.log("environment"+environmentCount+ " generated in makeEnvironment function");
-		
-		environmentCount++;
-		return newEnvironment; 
-		
-	}
-	
-})();
+
 
 

@@ -1,3 +1,34 @@
+//this will describe rooms / environments
+function environment(){
+	this.id;
+	this.size;
+	this.biome;
+	this.connections = {};
+
+}
+
+
+function makeEnvironment(direction){
+
+	generatedEnvironments["environment" + environmentCount] = new environment();
+	
+	//when the game is initializing, set the player's location to the new room.
+	if (player.location == null){
+	
+		player.location = generatedEnvironments["environment"+ environmentCount];
+		console.log("initial player location registered");
+	};
+	
+	generatedEnvironments["environment" + environmentCount].id = environmentCount;
+	generatedEnvironments["environment" + environmentCount].biome = randomEnvironment();
+	newEnvironment = generatedEnvironments["environment" + environmentCount];
+	console.log("environment"+environmentCount+ " generated in makeEnvironment function");
+	
+	environmentCount++;
+	return newEnvironment; 
+	
+}
+
 
 environments = {
 	desert:{
